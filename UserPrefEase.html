@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Preference Form</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
+    <style>
+        :root {
+            --bg-color: #f7f7f7;
+            --text-color: #333;
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --modal-bg-color: rgba(0, 0, 0, 0.4);
+            --modal-content-bg-color: #fefefe;
+        }
+
+        .dark-mode {
+            --bg-color: #333;
+            --text-color: #f7f7f7;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .checkbox-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover-color);
+        }
+
+        .feedback {
+            color: red;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        #profilePicturePreview {
+            display: block;
+            margin-top: 0.5rem;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .spinner {
+            display: none;
+            margin-top: 1rem;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: var(--modal-bg-color);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--modal-content-bg-color);
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #confirmSubmit {
+            background-color: #28a745;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #confirmSubmit:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button id="toggleTheme">Toggle Dark Mode</button>
+    </div>
+    <div class="form-container">
+        <h1>User Preference Form</h1>
+        <form id="preferenceForm">
+            <div class="form-group">
+                <label for="profilePicture">Profile Picture:</label>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
+                <img id="profilePicturePreview" src="" alt="Profile Picture Preview" style="display: none;">
+            </div>
+            <div class="form-group">
+                <label for="interests">Interests:</label>
+                <input type="text" id="interests" name="interests" placeholder="e.g., Sports, Music, Technology" required>
+                <small id="interestsFeedback" class="feedback"></small>
+            </div>
+            <div class="form-group">
+                <label for="favoriteProducts">Favorite Products:</label>
+                <input type="text" id="favoriteProducts" name="favoriteProducts" placeholder="e.g., Smartphones, Laptops, Headphones" required>
+                <small id="favoriteProductsFeedback" class="feedback"></small>
+            </div>
+            <div class="form-group">
+                <label for="notificationPreferences">Notification Preferences:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="notificationPreferences" value="email"> Email</label>
+                    <label><input type="checkbox" name="notificationPreferences" value="sms"> SMS</label>
+                    <label><input type="checkbox" name="notificationPreferences" value="push"> Push Notifications</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="favoriteCategories">Favorite Categories:</label>
+                <select id="favoriteCategories" name="favoriteCategories" multiple required>
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="home">Home</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="sports">Sports</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="text" id="dob" name="dob" placeholder="Select your date of birth" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Submit</button>
+                <div id="spinner" class="spinner"></div>
+            </div>
+        </form>
+    </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Submission</h2>
+            <p>Are you sure you want to submit the form?</p>
+            <button id="confirmSubmit">Yes, Submit</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('preferenceForm');
+            const spinner = document.getElementById('spinner');
+            const modal = document.getElementById('confirmationModal');
+            const closeModal = document.querySelector('.close');
+            const confirmSubmit = document.getElementById('confirmSubmit');
+            const profilePictureInput = document.getElementById('profilePicture');
+            const profilePicturePreview = document.getElementById('profilePicturePreview');
+            const themeToggle = document.getElementById('toggleTheme');
+            const body = document.body;
+
+            flatpickr("#dob", {
+                dateFormat: "Y-m-d"
+            });
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+            });
+
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        profilePicturePreview.src = reader.result;
+                        profilePicturePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                modal.style.display = 'flex';
+            });
+
+            closeModal.onclick = () => {
+                modal.style.display = 'none';
+            };
+
+            confirmSubmit.onclick = () => {
+                modal.style.display = 'none';
+                spinner.style.display = 'block';
+                setTimeout(() => {
+                    spinner.style.display = 'none';
+                    alert('Form submitted successfully!');
+                    form.reset();
+                    profilePicturePreview.style.display = 'none';
+                }, 2000);
+            };
+
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
